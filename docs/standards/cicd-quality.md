@@ -89,10 +89,21 @@ A PR may merge to `main` when:
 
 ## Branch protection (configured on GitHub)
 
-The `main` branch has these protection rules:
+Branch protection on `main` is **intentionally off** while TabTab is a solo project.
+Enabling the full rule set before there's a second maintainer creates two problems:
+
+1. **"Require 1 approval" + "Include administrators"** would lock the sole maintainer
+   out of ever merging their own work.
+2. **Required status checks** can only be marked as "required" after they've been
+   observed on at least one PR. Requiring them before the first PR exists creates a
+   deadlock.
+
+### Target state — to enable once a second maintainer joins
+
+When TabTab has ≥ 2 active maintainers, configure `main` with:
 
 - **Require a pull request before merging.** Direct pushes forbidden.
-- **Require approvals: 1** (more as the team grows).
+- **Require approvals: 1** (bump to 2 as the team grows further).
 - **Dismiss stale approvals when new commits are pushed.**
 - **Require status checks to pass before merging:**
   - `Builder CI / Build & Test (C++)` (when builder files change)
@@ -105,8 +116,20 @@ The `main` branch has these protection rules:
 - **Allow force pushes: NO.**
 - **Allow deletions: NO.**
 
-Initial setup is a one-time maintainer action. Re-run via
-`scripts/init-github.sh` (which will print the `gh api` calls needed).
+### Interim rules (solo maintainer)
+
+While protection is off, the maintainer self-enforces:
+
+- **No `--force` pushes to `main`.** Ever.
+- **No direct pushes to `main` for feature work.** Use a feature branch and a PR
+  even when self-reviewing — it keeps the history clean and gives CI a chance to run.
+- **Doc typo fixes directly to `main` are acceptable.**
+- **Don't self-merge without reading the diff.** The whole point of the PR process
+  survives even when you're the only reviewer.
+
+Enabling the full protection set is tracked as story **INF-007**. It's a one-time
+maintainer action via `gh api` and should land the same day a second maintainer
+accepts a collaborator invite.
 
 ---
 
