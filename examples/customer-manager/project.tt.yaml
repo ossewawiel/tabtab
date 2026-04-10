@@ -1,0 +1,129 @@
+schema: 1
+
+project:
+  name: customer-manager
+  version: 0.1.0
+  package: com.example.customermanager
+  targets: [jvm]
+
+theme:
+  designSystem: material3
+  palette:
+    primary: "#1976D2"
+    secondary: "#42A5F5"
+    background: "#FAFAFA"
+    surface: "#FFFFFF"
+
+dataSources:
+  customersApi:
+    type: rest
+    baseUrl: "${env:EXAMPLE_API_BASE}"
+    endpoints:
+      listCustomers:
+        method: GET
+        path: /customers
+        returns: List<Customer>
+      getCustomer:
+        method: GET
+        path: /customers/{id}
+        returns: Customer
+
+models:
+  Customer:
+    fields:
+      id: String
+      firstName: String
+      lastName: String
+      email: String
+      phone: String?
+      joinedAt: Instant
+
+signals:
+  searchQuery:
+    type: String
+    default: ""
+
+  customers:
+    type: Resource<List<Customer>>
+    source: customersApi.listCustomers
+
+  filteredCustomers:
+    type: Computed<List<Customer>>
+    derive: >
+      customers.data.filter { c ->
+        searchQuery.isEmpty() ||
+        c.firstName.contains(searchQuery, ignoreCase = true) ||
+        c.lastName.contains(searchQuery, ignoreCase = true)
+      }
+
+  selectedCustomerId:
+    type: String?
+    default: null
+
+  selectedCustomer:
+    type: Computed<Customer?>
+    derive: customers.data.find { it.id == selectedCustomerId }
+
+screens:
+  customerList:
+    root: Column
+    layout:
+      padding: 16
+      spacing: 12
+    children:
+      - TextField:
+          id: searchField
+          label: "Search customers"
+          value: => searchQuery
+          onChange: updateSearchQuery
+      - LoadingIndicator:
+          visible: => customers.isLoading
+      - ErrorBanner:
+          visible: => customers.hasError
+          message: => customers.errorMessage
+      - List:
+          items: => filteredCustomers
+          itemTemplate:
+            Row:
+              layout: { padding: 12, spacing: 8 }
+              onClick: selectCustomer
+              children:
+                - Column:
+                    layout: { spacing: 4 }
+                    children:
+                      - Text:
+                          value: => "${item.firstName} ${item.lastName}"
+                          style: { variant: bodyLarge, weight: medium }
+                      - Text:
+                          value: => item.email
+                          style: { variant: bodySmall, color: onSurfaceVariant }
+
+  customerDetail:
+    root: Column
+    layout:
+      padding: 24
+      spacing: 16
+    children:
+      - Text:
+          value: => "${selectedCustomer?.firstName ?: ''} ${selectedCustomer?.lastName ?: ''}"
+          style: { variant: headlineMedium }
+      - Text:
+          value: => selectedCustomer?.email ?: ""
+          style: { variant: bodyMedium }
+      - Text:
+          value: => selectedCustomer?.phone ?: "No phone on file"
+          style: { variant: bodyMedium }
+      - Button:
+          text: "Back"
+          variant: text
+          onClick: goBack
+
+navigation:
+  start: customerList
+  routes:
+    customerList:
+      on:
+        selectCustomer: customerDetail
+    customerDetail:
+      on:
+        goBack: customerList

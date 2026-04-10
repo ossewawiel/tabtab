@@ -1,0 +1,15 @@
+// ===============================================================
+// This file is a TabTab output template. Placeholders marked
+// ${TABTAB_*} are replaced by the code generator at export time.
+// ===============================================================
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        google()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+}
+
+rootProject.name = "${TABTAB_PROJECT_NAME}"

@@ -1,0 +1,24 @@
+schema: 1
+
+project:
+  name: hello-world
+  version: 0.1.0
+  package: com.example.helloworld
+
+screens:
+  main:
+    root: Column
+    layout:
+      padding: 24
+      spacing: 16
+      alignment: center
+      justify: center
+    children:
+      - Text:
+          value: "Hello, TabTab!"
+          style:
+            variant: headlineLarge
+      - Button:
+          text: "Click Me"
+          variant: filled
+          onClick: handleClick

@@ -1,0 +1,79 @@
+name: Bug report
+description: Something isn't working as expected in the builder or generated output.
+title: "[Bug] "
+labels: ["type:bug", "status:new"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill in as much detail as you can.
+        The more specific you are, the faster we can investigate.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear, concise description of what the bug is.
+      placeholder: "When I ... the builder crashes / the generated Kotlin fails to compile / ..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps that consistently trigger the bug.
+      placeholder: |
+        1. Open the hello-world example
+        2. Add a Button to the Column
+        3. Click Export
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      placeholder: What you thought would happen.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      placeholder: What actually happened. Include stack traces if any.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Affected platform
+      description: Which part of TabTab is affected?
+      options:
+        - Builder (C++ app)
+        - Code generator
+        - Generated Kotlin output
+        - Documentation
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `tabtab --version`, or the git commit hash.
+      placeholder: "v0.1.0 or commit abc1234"
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows 10
+        - Windows 11
+        - macOS
+        - Linux (Ubuntu)
+        - Linux (other)
+        - Other
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or logs
+      description: Drag and drop images, or paste logs in a code block.

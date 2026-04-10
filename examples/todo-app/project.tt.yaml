@@ -1,0 +1,64 @@
+schema: 1
+
+project:
+  name: todo-app
+  version: 0.1.0
+  package: com.example.todoapp
+
+models:
+  Todo:
+    fields:
+      id: String
+      title: String
+      done: Boolean
+
+signals:
+  todos:
+    type: Signal<List<Todo>>
+    default: []
+
+  newTodoText:
+    type: Signal<String>
+    default: ""
+
+  remainingCount:
+    type: Computed<Int>
+    derive: todos.count { !it.done }
+
+screens:
+  main:
+    root: Column
+    layout:
+      padding: 24
+      spacing: 16
+    children:
+      - Text:
+          value: "Todo"
+          style: { variant: headlineLarge }
+      - Row:
+          layout: { spacing: 8 }
+          children:
+            - TextField:
+                id: newTodoField
+                label: "What needs doing?"
+                value: => newTodoText
+                onChange: updateNewTodoText
+            - Button:
+                text: "Add"
+                variant: filled
+                onClick: addTodo
+      - Text:
+          value: => "${remainingCount} remaining"
+          style: { variant: bodyMedium }
+      - List:
+          items: => todos
+          itemTemplate:
+            Row:
+              layout: { spacing: 12 }
+              children:
+                - Checkbox:
+                    checked: => item.done
+                    onChange: toggleTodo
+                - Text:
+                    value: => item.title
+                    style: { variant: bodyLarge }

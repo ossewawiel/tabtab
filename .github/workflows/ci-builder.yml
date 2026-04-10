@@ -1,0 +1,53 @@
+name: Builder CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'builder/**'
+      - '.github/workflows/ci-builder.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Build & Test (C++)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build libgl-dev libx11-dev
+
+      - name: Cache Skia
+        uses: actions/cache@v4
+        with:
+          path: builder/third_party/skia
+          key: skia-${{ runner.os }}-${{ hashFiles('builder/scripts/fetch-skia.sh') }}
+
+      - name: Fetch Skia (if not cached)
+        run: cd builder && bash scripts/fetch-skia.sh
+
+      - name: Configure CMake
+        run: cd builder && cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build
+        run: cd builder && cmake --build build --parallel
+
+      - name: Run tests
+        run: cd builder/build && ctest --output-on-failure
+
+      - name: clang-tidy
+        run: cd builder && cmake --build build --target clang-tidy
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: builder-test-results
+          path: builder/build/test-results/
+          retention-days: 14

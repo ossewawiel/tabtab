@@ -1,0 +1,62 @@
+name: Sprint task
+description: A single story from a planned feature (usually created by /plan-feature).
+title: "[STORY-ID] "
+labels: ["status:new", "source:ai-agent"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is for individual stories that belong to a planned feature.
+        For external bug reports use the Bug template; for new ideas use the Feature template.
+  - type: input
+    id: story-id
+    attributes:
+      label: Story ID
+      description: "Platform prefix + number (e.g. BLD-007, GEN-012, OUT-005)."
+      placeholder: "BLD-007"
+    validations:
+      required: true
+  - type: input
+    id: feature
+    attributes:
+      label: Feature
+      description: The feature this story belongs to (kebab-case).
+      placeholder: "batched-signal-propagation"
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Builder (C++)
+        - Code generator
+        - Output framework
+        - Infrastructure
+        - Documentation
+        - Cross-cutting
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What this story delivers.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Concrete, testable conditions for "done".
+      placeholder: |
+        - [ ] X happens when Y
+        - [ ] Tests cover Z
+    validations:
+      required: true
+  - type: input
+    id: sprint
+    attributes:
+      label: Sprint / phase
+      description: "Phase 1-5 (e.g. phase-1, phase-2)."
+      placeholder: "phase-1"
