@@ -21,7 +21,7 @@ See `docs/standards/cicd-quality.md` for the CI pipeline and quality gates.
 ### INF-001 — Add `.clang-format` config and CMake target
 **Feature:** infra-bootstrap
 **Phase:** 1
-**Status:** 📋 Planned
+**Status:** ✅ Done
 
 Add a project-wide `.clang-format` at the repo root with the settings called
 out in `docs/standards/coding-standards.md` §C++ (100-col lines, 4-space
@@ -42,7 +42,7 @@ target that fails CI if any file would change.
 ### INF-002 — Add `.clang-tidy` config and CMake target
 **Feature:** infra-bootstrap
 **Phase:** 1
-**Status:** 📋 Planned
+**Status:** ✅ Done
 
 Add a `.clang-tidy` at the repo root enabling a sensible check set
 (bugprone-*, cppcoreguidelines-*, modernize-*, performance-*, readability-*,

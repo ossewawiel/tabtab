@@ -219,6 +219,26 @@ Read these documents in order before starting work:
 
 ## Development Environment
 
+### Shell
+
+The maintainer runs Claude Code from **PowerShell on Windows**. All command
+examples, verification scripts, and reproduction snippets that the
+**maintainer is expected to run** — including those generated on the fly
+during a session — must be written in **PowerShell**, not bash or `cmd`.
+
+The Claude Code harness exposes an internal Bash tool that runs Git Bash; that
+is the shell **the agent** uses to execute commands itself. It is **not** the
+shell the maintainer is sitting in. Do not confuse the two.
+
+- Commands handed to the maintainer → PowerShell.
+- Commands the agent runs via its Bash tool → bash.
+- Use Windows-style paths in PowerShell snippets:
+  `C:\Program Files\LLVM\bin`, `builder\build-ninja`, etc.
+- Build `$env:PATH` with semicolons:
+  `$env:PATH = "C:\Program Files\LLVM\bin;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;$env:PATH"`.
+- Use `Remove-Item -Recurse -Force` instead of `rm -rf`.
+- Do **not** offer bash "equivalents" unless the maintainer explicitly asks.
+
 ### Prerequisites
 - C++20 compiler (GCC 13+ or Clang 16+ or MSVC 2022+)
 - CMake 3.28+
@@ -230,20 +250,28 @@ Read these documents in order before starting work:
 - GitHub CLI (`gh`)
 
 ### Build Commands
-```bash
+
+The maintainer runs everything from PowerShell (see §Shell above).
+
+```powershell
 # Builder (C++)
-cd builder && mkdir build && cd build
+cd builder
+New-Item -ItemType Directory -Force build | Out-Null
+cd build
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build . --parallel
 
 # Run builder tests
-cd builder/build && ctest --output-on-failure
+cd builder\build
+ctest --output-on-failure
 
 # Test code generation
-cd tests/codegen && python run_tests.py
+cd tests\codegen
+python run_tests.py
 
 # Build example output project
-cd examples/customer-manager/exported && ./gradlew build
+cd examples\customer-manager\exported
+.\gradlew build
 ```
 
 ## Conventions

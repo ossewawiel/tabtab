@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build libgl-dev libx11-dev
+          sudo apt-get install -y cmake ninja-build libgl-dev libx11-dev clang-format clang-tidy
 
       - name: Cache Skia
         uses: actions/cache@v4
@@ -40,6 +40,9 @@ jobs:
 
       - name: Run tests
         run: cd builder/build && ctest --output-on-failure
+
+      - name: clang-format-check
+        run: cd builder && cmake --build build --target clang-format-check
 
       - name: clang-tidy
         run: cd builder && cmake --build build --target clang-tidy

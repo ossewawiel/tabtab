@@ -1,0 +1,89 @@
+# TabTab C++ formatting contract.
+#
+# Authoritative source: docs/standards/coding-standards.md §C++.
+#
+# This config is Google base (`BasedOnStyle: Google`) with a small set of
+# deviations required by the TabTab coding standards:
+#
+#   - ColumnLimit: 100         (Google is 80)
+#   - IndentWidth: 4           (Google is 2)
+#   - NamespaceIndentation:
+#     None                     (Google indents namespace contents)
+#   - BreakBeforeBraces: Custom
+#       Allman for namespaces, classes, structs, enums, unions
+#       K&R    for functions, control flow, case labels
+#   - PointerAlignment: Left   (`T* ptr`)
+#   - ReferenceAlignment: Left (`T& ref`)
+#   - IncludeBlocks: Regroup with project-specific categories:
+#       0. Matching header (auto-detected by clang-format)
+#       1. C++ standard library    (`<vector>`, `<cstdio>`, ...)
+#       2. Third-party              (`<skia/SkCanvas.h>`, `<yaml-cpp/yaml.h>`, ...)
+#       3. Project headers          (`"tabtab/..."` and other local quotes)
+#
+# Enforced by:
+#   - `cmake --build build --target clang-format`        (in-place rewrite)
+#   - `cmake --build build --target clang-format-check`  (CI gate)
+#
+# Do not hand-edit formatting in source files. If the tool disagrees with
+# you, the tool wins — update this file instead.
+
+---
+Language: Cpp
+BasedOnStyle: Google
+
+ColumnLimit: 100
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+ConstructorInitializerIndentWidth: 4
+AccessModifierOffset: -4
+NamespaceIndentation: None
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+DerivePointerAlignment: false
+
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortLambdasOnASingleLine: All
+AllowShortBlocksOnASingleLine: Empty
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterNamespace: true
+  AfterClass: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterEnum: true
+  AfterFunction: false
+  AfterControlStatement: Never
+  AfterCaseLabel: false
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+FixNamespaceComments: true
+ShortNamespaceLines: 0
+
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^<[^/]+>$'
+    Priority: 1
+  - Regex: '^<.+/.+>$'
+    Priority: 2
+  - Regex: '^".*"$'
+    Priority: 3
+SortIncludes: CaseSensitive
+
+SeparateDefinitionBlocks: Always
+EmptyLineBeforeAccessModifier: LogicalBlock
+...
