@@ -100,10 +100,15 @@ Present:
 - Test count (new, passing)
 - Build status
 - Any deviations from the handover plan (with justification)
-- Verification instructions the developer can run locally:
-  ```bash
-  cd builder && cmake --build build --parallel
-  cd builder/build && ctest --output-on-failure --label-regex "{story-id}"
+- Verification instructions the developer can run locally. **Always write
+  these as PowerShell, never bash** — the maintainer is in PowerShell on
+  Windows (see `CLAUDE.md` §Shell). The harness's internal Bash tool is the
+  agent's shell, not the developer's:
+  ```powershell
+  cd builder
+  cmake --build build --parallel
+  cd build
+  ctest --output-on-failure --label-regex "{story-id}"
   ```
 
 Then ask: **"Is the story acceptable? Reply `yes` to record completion, or tell me what to fix."**

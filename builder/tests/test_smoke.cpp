@@ -3,7 +3,6 @@
 
 #include <gtest/gtest.h>
 
-TEST(Smoke, gtestIsWiredCorrectly_passesTrivially)
-{
+TEST(Smoke, gtestIsWiredCorrectly_passesTrivially) {
     EXPECT_EQ(2 + 2, 4);
 }

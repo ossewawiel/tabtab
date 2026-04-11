@@ -1,0 +1,148 @@
+# TabTab C++ static-analysis contract.
+#
+# Authoritative sources:
+#   - docs/standards/coding-standards.md §C++ (naming, style, what-not-to-do)
+#   - docs/specs/features/infra-bootstrap/infra-handover.md §INF-002
+#
+# Enabled check groups
+# --------------------
+#   bugprone-*           — likely-bug patterns
+#   cppcoreguidelines-*  — C++ Core Guidelines hygiene
+#   modernize-*          — push code toward modern C++20 idioms
+#   performance-*        — avoid the obvious slow-downs
+#   readability-*        — keep code legible
+#   portability-*        — keep code portable across the three target compilers
+#   misc-*               — catch-all that includes a few high-value checks
+#
+# Disabled checks (and why)
+# -------------------------
+#   modernize-use-trailing-return-type
+#       Coding standards use leading return types (`int foo()`, not `auto foo() -> int`).
+#   readability-named-parameter
+#       We frequently use `void f(int /*unused*/)` patterns in skeleton/stub code.
+#   cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers
+#       Visual layout code has many small literal coordinates that aren't worth
+#       hoisting into named constants.
+#   cppcoreguidelines-pro-bounds-pointer-arithmetic
+#       Skia, Scintilla, and yaml-cpp APIs hand us raw pointers and lengths;
+#       fighting this check at every interop point is more noise than signal.
+#   misc-non-private-member-variables-in-classes,
+#   cppcoreguidelines-non-private-member-variables-in-classes
+#       Plain-data structs (POD-like) intentionally expose fields directly per
+#       the coding standards (`struct` for data, `class` for invariants).
+#   readability-identifier-length
+#       Lots of legitimate short names: `i`, `x`, `y`, `dt`, `id`. The naming
+#       check below already enforces convention; length is not the lever.
+#   modernize-use-nodiscard
+#       Spammy on getter-heavy code; we adopt `[[nodiscard]]` selectively, by
+#       review.
+#   bugprone-easily-swappable-parameters
+#       Frequent in geometric / layout APIs (`Rect{x, y, w, h}`); the type
+#       system isn't going to save us here and the check has a high false-positive
+#       rate. We rely on review for parameter ordering.
+#   cppcoreguidelines-pro-type-reinterpret-cast
+#       Required at the Skia and Scintilla boundaries.
+#   cppcoreguidelines-pro-type-vararg, cppcoreguidelines-pro-bounds-array-to-pointer-decay
+#       Triggered by `printf`-family and string literal usage; the noise/value
+#       ratio is poor for the kind of code we write.
+#   modernize-use-designated-initializers
+#       C++20 designated initialisers are not supported uniformly enough across
+#       our compiler matrix yet to make this a hard rule.
+#   readability-function-cognitive-complexity
+#       We will revisit this check once we have real subsystems to measure; a
+#       blanket threshold across skeleton + production code is premature.
+#
+# Identifier naming
+# -----------------
+# Mirrors the table in coding-standards.md §C++ Naming. Enforced by
+# `readability-identifier-naming`. Any violation is a build failure under
+# `WarningsAsErrors: '*'` below.
+
+---
+Checks: >
+  -*,
+  bugprone-*,
+  cppcoreguidelines-*,
+  modernize-*,
+  performance-*,
+  readability-*,
+  portability-*,
+  misc-*,
+  -modernize-use-trailing-return-type,
+  -modernize-use-nodiscard,
+  -modernize-use-designated-initializers,
+  -readability-named-parameter,
+  -readability-magic-numbers,
+  -readability-identifier-length,
+  -readability-function-cognitive-complexity,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -misc-non-private-member-variables-in-classes,
+  -bugprone-easily-swappable-parameters
+
+WarningsAsErrors: '*'
+HeaderFilterRegex: '^.*/builder/(src|include|tests)/.*\.(h|hpp)$'
+FormatStyle: file
+
+CheckOptions:
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.UnionCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.ScopedEnumConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.MethodCase
+    value: camelBack
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.LocalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: _
+  - key: readability-identifier-naming.ProtectedMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: _
+  - key: readability-identifier-naming.PublicMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstexprVariablePrefix
+    value: k
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: k
+  - key: readability-identifier-naming.StaticConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.StaticConstantPrefix
+    value: k
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.MacroDefinitionPrefix
+    value: TABTAB_
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypedefCase
+    value: CamelCase
+...
